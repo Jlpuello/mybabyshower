@@ -32,6 +32,7 @@ export interface EventData {
   locationImage: string | null;
   storyTitle: string | null;
   storyContent: string | null;
+  storyImage: string | null;
   revelationTitle: string | null;
   revelationContent: string | null;
   revelationMediaUrl: string | null;
@@ -74,12 +75,15 @@ export const EventSettings = () => {
   const [heroImageFile, setHeroImageFile] = useState<File | null>(null);
   const [locationImagePreview, setLocationImagePreview] = useState<string | null>(null);
   const [locationImageFile, setLocationImageFile] = useState<File | null>(null);
+  const [storyImagePreview, setStoryImagePreview] = useState<string | null>(null);
+  const [storyImageFile, setStoryImageFile] = useState<File | null>(null);
   const [revelationMediaPreview, setRevelationMediaPreview] = useState<string | null>(null);
   const [revelationMediaFile, setRevelationMediaFile] = useState<File | null>(null);
   const [revelationMediaType, setRevelationMediaType] = useState<'IMAGE' | 'VIDEO' | null>(null);
 
   const heroInputRef = useRef<HTMLInputElement>(null);
   const locationInputRef = useRef<HTMLInputElement>(null);
+  const storyInputRef = useRef<HTMLInputElement>(null);
   const revelationInputRef = useRef<HTMLInputElement>(null);
 
   const fetchEvent = async () => {
@@ -112,6 +116,7 @@ export const EventSettings = () => {
 
       setHeroImagePreview(data.heroImage);
       setLocationImagePreview(data.locationImage);
+      setStoryImagePreview(data.storyImage);
       setRevelationMediaPreview(data.revelationMediaUrl);
       setRevelationMediaType(data.revelationMediaType);
     } catch (err) {
@@ -144,6 +149,14 @@ export const EventSettings = () => {
     if (file) {
       setLocationImageFile(file);
       setLocationImagePreview(URL.createObjectURL(file));
+    }
+  };
+
+  const handleStoryImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setStoryImageFile(file);
+      setStoryImagePreview(URL.createObjectURL(file));
     }
   };
 
@@ -184,6 +197,7 @@ export const EventSettings = () => {
 
       if (heroImageFile) formData.append('heroImage', heroImageFile);
       if (locationImageFile) formData.append('locationImage', locationImageFile);
+      if (storyImageFile) formData.append('storyImage', storyImageFile);
       if (revelationMediaFile) formData.append('revelationMedia', revelationMediaFile);
 
       const res = await fetch('/api/admin/event', {
@@ -543,6 +557,41 @@ export const EventSettings = () => {
                   rows={4}
                   className="w-full px-4 py-2.5 rounded-lg border border-warmBeige bg-white text-textPrimary placeholder:text-textLight focus:outline-none focus:ring-2 focus:ring-goldAccent text-sm resize-none"
                 />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-textSecondary mb-1">
+                  Imagen de la Historia (Opcional - debajo del texto)
+                </label>
+                <input
+                  ref={storyInputRef}
+                  type="file"
+                  accept="image/*"
+                  onChange={handleStoryImageChange}
+                  className="hidden"
+                />
+                {storyImagePreview ? (
+                  <div className="relative aspect-video max-w-sm rounded-xl overflow-hidden border border-warmBeige bg-gray-100 group">
+                    <img src={storyImagePreview} alt="Historia" className="w-full h-full object-cover" />
+                    <button
+                      type="button"
+                      onClick={() => storyInputRef.current?.click()}
+                      className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white font-medium text-xs gap-1.5"
+                    >
+                      <Upload className="w-4 h-4" /> Cambiar imagen
+                    </button>
+                  </div>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={() => storyInputRef.current?.click()}
+                    className="flex flex-col items-center justify-center w-full max-w-sm aspect-video rounded-xl border-2 border-dashed border-warmBeige bg-white hover:border-goldAccent transition-colors cursor-pointer"
+                  >
+                    <Upload className="w-6 h-6 text-textLight mb-1" />
+                    <span className="text-xs font-medium text-textSecondary">Subir imagen para la historia</span>
+                    <span className="text-[11px] text-textLight mt-0.5">JPEG, PNG, WEBP</span>
+                  </button>
+                )}
               </div>
             </div>
 

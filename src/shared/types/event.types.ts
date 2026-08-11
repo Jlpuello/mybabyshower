@@ -14,6 +14,7 @@ export interface Event {
   locationImage: string | null;
   storyTitle: string | null;
   storyContent: string | null;
+  storyImage: string | null;
   revelationTitle: string | null;
   revelationContent: string | null;
   revelationMediaUrl: string | null;
@@ -43,6 +44,7 @@ export interface EventPublic {
   locationImage: string | null;
   storyTitle: string | null;
   storyContent: string | null;
+  storyImage: string | null;
   revelationTitle: string | null;
   revelationContent: string | null;
   revelationMediaUrl: string | null;

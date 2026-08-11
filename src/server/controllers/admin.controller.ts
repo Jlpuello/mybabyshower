@@ -108,3 +108,62 @@ export const createGuest = async (req: AuthRequest, res: Response) => {
 
   res.status(201).json(guest);
 };
+
+/** PUT /api/admin/guests/:publicId — Actualiza datos del invitado */
+export const updateGuest = async (req: AuthRequest, res: Response) => {
+  const eventId = req.eventId;
+  const publicId = req.params.publicId as string;
+
+  if (!eventId) {
+    throw new AppError('No autorizado', 401);
+  }
+
+  const existingGuest = await prisma.guest.findFirst({
+    where: { publicId, eventId },
+  });
+
+  if (!existingGuest) {
+    throw new AppError('Invitado no encontrado', 404);
+  }
+
+  const { name, phone, email, attendanceStatus, isActive } = req.body as {
+    name?: string;
+    phone?: string;
+    email?: string | null;
+    attendanceStatus?: 'PENDING' | 'CONFIRMED' | 'DECLINED';
+    isActive?: boolean;
+  };
+
+  const updatedGuest = await prisma.guest.update({
+    where: { id: existingGuest.id },
+    data: {
+      ...(name !== undefined && { name: name.trim() }),
+      ...(phone !== undefined && { phone: phone.trim() }),
+      ...(email !== undefined && { email: email ? email.trim() : null }),
+      ...(attendanceStatus !== undefined && {
+        attendanceStatus,
+        attendanceUpdatedAt: new Date(),
+      }),
+      ...(isActive !== undefined && { isActive }),
+    },
+    select: {
+      publicId: true,
+      name: true,
+      phone: true,
+      email: true,
+      invitationCode: true,
+      attendanceStatus: true,
+      isActive: true,
+      createdAt: true,
+      reservations: {
+        select: {
+          gift: {
+            select: { name: true },
+          },
+        },
+      },
+    },
+  });
+
+  res.json(updatedGuest);
+};

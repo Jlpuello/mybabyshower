@@ -41,7 +41,7 @@ describe('useEvent', () => {
     });
 
     expect(result.current.event).toBeNull();
-    expect(result.current.error).toBe('Error desconocido');
+    expect(result.current.error).toBe('Network error');
   });
 
   it('handles non-ok response', async () => {

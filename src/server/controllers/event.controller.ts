@@ -35,6 +35,7 @@ export const getEvent = async (_req: unknown, res: Response) => {
     locationImage: event.locationImage,
     storyTitle: event.storyTitle,
     storyContent: event.storyContent,
+    storyImage: event.storyImage,
     revelationTitle: event.revelationTitle,
     revelationContent: event.revelationContent,
     revelationMediaUrl: event.revelationMediaUrl,
@@ -77,6 +78,7 @@ export const updateEvent = async (req: AuthRequest, res: Response) => {
 
   let heroImage = currentEvent.heroImage;
   let locationImage = currentEvent.locationImage;
+  let storyImage = currentEvent.storyImage;
   let revelationMediaUrl = currentEvent.revelationMediaUrl;
   let revelationMediaType = currentEvent.revelationMediaType;
 
@@ -94,6 +96,14 @@ export const updateEvent = async (req: AuthRequest, res: Response) => {
       if (fs.existsSync(oldPath)) fs.unlinkSync(oldPath);
     }
     locationImage = `/uploads/event/${files.locationImage[0].filename}`;
+  }
+
+  if (files?.storyImage?.[0]) {
+    if (storyImage && storyImage.startsWith('/uploads/')) {
+      const oldPath = path.join(process.cwd(), storyImage);
+      if (fs.existsSync(oldPath)) fs.unlinkSync(oldPath);
+    }
+    storyImage = `/uploads/event/${files.storyImage[0].filename}`;
   }
 
   if (files?.revelationMedia?.[0]) {
@@ -146,6 +156,7 @@ export const updateEvent = async (req: AuthRequest, res: Response) => {
       isRevealed: isRevealed === 'true' || isRevealed === true,
       heroImage,
       locationImage,
+      storyImage,
       revelationMediaUrl,
       revelationMediaType,
       primaryColor: (primaryColor as string | undefined) || '#8B7355',

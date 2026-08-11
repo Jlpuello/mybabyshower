@@ -110,6 +110,10 @@ export const AdminPanel = () => {
     setGuests((prev) => [guest, ...prev]);
   };
 
+  const handleGuestUpdated = (updatedGuest: GuestRow) => {
+    setGuests((prev) => prev.map((g) => (g.publicId === updatedGuest.publicId ? updatedGuest : g)));
+  };
+
   const handleGiftCreated = (gift: GiftRow) => {
     setGifts((prev) => [gift, ...prev]);
   };
@@ -229,7 +233,11 @@ export const AdminPanel = () => {
               </svg>
             </div>
           ) : (
-            <GuestsTable guests={guests} onGuestCreated={handleGuestCreated} />
+            <GuestsTable
+              guests={guests}
+              onGuestCreated={handleGuestCreated}
+              onGuestUpdated={handleGuestUpdated}
+            />
           )
         )}
         {activeTab === 'gifts' && (

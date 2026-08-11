@@ -98,5 +98,6 @@ export const uploadEventFiles = multer({
 }).fields([
   { name: 'heroImage', maxCount: 1 },
   { name: 'locationImage', maxCount: 1 },
+  { name: 'storyImage', maxCount: 1 },
   { name: 'revelationMedia', maxCount: 1 },
 ]);

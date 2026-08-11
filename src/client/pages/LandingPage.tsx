@@ -36,11 +36,14 @@ const LandingPage = () => {
         description={event.description}
         heroImage={event.heroImage}
         primaryColor={event.primaryColor}
+        secondaryColor={event.secondaryColor}
       />
       <StorySection
         storyTitle={event.storyTitle}
         storyContent={event.storyContent}
+        storyImage={event.storyImage}
         primaryColor={event.primaryColor}
+        secondaryColor={event.secondaryColor}
       />
       <RevelationSection
         revelationTitle={event.revelationTitle}
@@ -49,6 +52,7 @@ const LandingPage = () => {
         revelationMediaType={event.revelationMediaType}
         isRevealed={event.isRevealed}
         primaryColor={event.primaryColor}
+        secondaryColor={event.secondaryColor}
       />
       <EventInfoSection
         eventDate={event.eventDate}
@@ -57,8 +61,9 @@ const LandingPage = () => {
         address={event.address}
         locationImage={event.locationImage}
         primaryColor={event.primaryColor}
+        secondaryColor={event.secondaryColor}
       />
-      <GallerySection primaryColor={event.primaryColor} />
+      <GallerySection primaryColor={event.primaryColor} secondaryColor={event.secondaryColor} />
     </div>
   );
 };

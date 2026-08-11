@@ -14,4 +14,23 @@
   .text-balance {
     text-wrap: balance;
   }
+  .animate-once {
+    animation-iteration-count: 1;
+    animation-fill-mode: both;
+  }
+  .animate-delay-300 {
+    animation-delay: 300ms;
+  }
+  .animate-delay-500 {
+    animation-delay: 500ms;
+  }
+  .animate-delay-600 {
+    animation-delay: 600ms;
+  }
+  .animate-delay-800 {
+    animation-delay: 800ms;
+  }
+  .animate-delay-1000 {
+    animation-delay: 1000ms;
+  }
 }

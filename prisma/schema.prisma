@@ -34,6 +34,7 @@ model Event {
   // Contenido narrativo
   storyTitle    String?
   storyContent  String?  @db.Text
+  storyImage    String?
   revelationTitle String?
   revelationContent String? @db.Text
   revelationMediaUrl String?

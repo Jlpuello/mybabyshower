@@ -1,11 +1,11 @@
 import { Router } from 'express';
 import { authenticate } from '../middleware/auth.middleware.ts';
 import { validate } from '../middleware/validate.middleware.ts';
-import { createGuestSchema } from '../validators/admin.validator.ts';
+import { createGuestSchema, updateGuestSchema } from '../validators/admin.validator.ts';
 import { createGiftSchema } from '../validators/gift.validator.ts';
 import { reorderMemoriesSchema } from '../validators/memory.validator.ts';
 import { updateEventSchema } from '../validators/event.validator.ts';
-import { listGuests, createGuest } from '../controllers/admin.controller.ts';
+import { listGuests, createGuest, updateGuest } from '../controllers/admin.controller.ts';
 import { listGifts, createGift, deleteGift } from '../controllers/gift.controller.ts';
 import { listMemories, createMemory, togglePublish, reorderMemories, deleteMemory } from '../controllers/memory.controller.ts';
 import { getAdminEvent, updateEvent } from '../controllers/event.controller.ts';
@@ -19,6 +19,7 @@ router.use(authenticate);
 // Invitados
 router.get('/guests', listGuests);
 router.post('/guests', validate(createGuestSchema), createGuest);
+router.put('/guests/:publicId', validate(updateGuestSchema), updateGuest);
 
 // Regalos
 router.get('/gifts', listGifts);

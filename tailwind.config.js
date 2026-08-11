@@ -31,6 +31,20 @@ export default {
         serif: ['Playfair Display', 'Georgia', 'serif'],
         script: ['"Great Vibes"', '"Alex Brush"', '"Dancing Script"', 'cursive'],
       },
+      keyframes: {
+        'fade-right': {
+          '0%': { opacity: '0', transform: 'translateX(-2.5rem)' },
+          '100%': { opacity: '1', transform: 'translateX(0)' },
+        },
+        'fade-left': {
+          '0%': { opacity: '0', transform: 'translateX(2.5rem)' },
+          '100%': { opacity: '1', transform: 'translateX(0)' },
+        },
+      },
+      animation: {
+        'fade-right': 'fade-right 1.6s cubic-bezier(0.16, 1, 0.3, 1) both',
+        'fade-left': 'fade-left 1.6s cubic-bezier(0.16, 1, 0.3, 1) both',
+      },
     },
   },
   plugins: [],

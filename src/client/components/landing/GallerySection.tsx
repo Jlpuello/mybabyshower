@@ -9,6 +9,7 @@ import 'yet-another-react-lightbox/plugins/captions.css';
 import { Camera, Play, Image as ImageIcon } from 'lucide-react';
 import { SectionNavButton } from './SectionNavButton';
 import { Footer } from './Footer';
+import { PeekingBaby } from './PeekingBaby';
 
 interface PublicMemory {
   publicId: string;
@@ -21,6 +22,7 @@ interface PublicMemory {
 
 interface GallerySectionProps {
   primaryColor?: string | null;
+  secondaryColor?: string | null;
 }
 
 const formatDate = (dateStr: string) =>
@@ -100,8 +102,19 @@ const GalleryCard = ({ memory, index, onClick }: GalleryCardProps) => {
   );
 };
 
+const chunkArray = <T,>(arr: T[], size: number): { items: T[]; startIndex: number }[] => {
+  const chunks: { items: T[]; startIndex: number }[] = [];
+  for (let i = 0; i < arr.length; i += size) {
+    chunks.push({
+      items: arr.slice(i, i + size),
+      startIndex: i,
+    });
+  }
+  return chunks;
+};
+
 // ── Sección principal ─────────────────────────────────────────────────
-export const GallerySection = ({ primaryColor }: GallerySectionProps) => {
+export const GallerySection = ({ primaryColor, secondaryColor }: GallerySectionProps) => {
   const [memories, setMemories] = useState<PublicMemory[]>([]);
   const [loading, setLoading] = useState(true);
   const [lightboxIndex, setLightboxIndex] = useState(-1);
@@ -146,19 +159,26 @@ export const GallerySection = ({ primaryColor }: GallerySectionProps) => {
 
   if (!loading && memories.length === 0) return null;
 
+  const memoryChunks = chunkArray(memories, 4);
+
   return (
-    <section ref={sectionRef} className="min-h-screen flex flex-col items-center justify-between pt-12 pb-0 px-0 bg-white select-none" id="galeria">
+    <section ref={sectionRef} className="relative overflow-hidden min-h-[100dvh] flex flex-col items-center justify-between pt-6 sm:pt-10 md:pt-12 pb-0 px-0 bg-white select-none" id="galeria">
+      <PeekingBaby side="left" position="top" delay="300" />
       <div className="max-w-6xl mx-auto my-auto w-full px-4">
         {/* Encabezado */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={sectionInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.6 }}
-          className="text-center mb-8"
+          className="text-center mb-6 sm:mb-8"
         >
           <div
-            className="inline-flex items-center gap-2 px-4 py-1 rounded-full text-xs sm:text-sm font-medium mb-2.5"
-            style={{ backgroundColor: `${primaryColor ?? '#C9A962'}20`, color: primaryColor ?? '#C9A962' }}
+            className="inline-flex items-center gap-2 px-4 py-1 rounded-full text-xs sm:text-sm font-medium mb-2.5 shadow-2xs border"
+            style={{
+              backgroundColor: `${secondaryColor ?? '#D4C4B7'}35`,
+              color: primaryColor ?? '#C9A962',
+              borderColor: `${secondaryColor ?? '#D4C4B7'}70`,
+            }}
           >
             <ImageIcon className="w-3.5 h-3.5" />
             Nuestra historia en imágenes
@@ -173,8 +193,8 @@ export const GallerySection = ({ primaryColor }: GallerySectionProps) => {
 
         {/* Loading skeleton */}
         {loading && (
-          <div className="columns-2 md:columns-3 lg:columns-4 gap-4 space-y-4">
-            {[...Array(8)].map((_, i) => (
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
+            {[...Array(4)].map((_, i) => (
               <div
                 key={i}
                 className={`w-full rounded-xl bg-warmBeige animate-pulse ${
@@ -185,18 +205,40 @@ export const GallerySection = ({ primaryColor }: GallerySectionProps) => {
           </div>
         )}
 
-        {/* Masonry grid */}
+        {/* Galería organizada en bloques de 4 (2x2) en Móvil y Mosaico en Desktop */}
         {!loading && memories.length > 0 && (
-          <div className="columns-2 md:columns-3 lg:columns-4 gap-4 space-y-4 max-h-[48vh] md:max-h-[52vh] overflow-y-auto pr-1">
-            {memories.map((memory, index) => (
-              <div key={memory.publicId} className="break-inside-avoid mb-4">
-                <GalleryCard
-                  memory={memory}
-                  index={index}
-                  onClick={() => openLightbox(index)}
-                />
-              </div>
-            ))}
+          <div className="w-full max-h-[50vh] md:max-h-[55vh] overflow-y-auto pr-1">
+            {/* Vista Móvil: Grupos/Bloques de 4 en 4 (grillas 2x2) */}
+            <div className="block md:hidden space-y-4">
+              {memoryChunks.map((chunk, groupIdx) => (
+                <div key={groupIdx} className="grid grid-cols-2 gap-3 p-2 rounded-2xl bg-warmBeige/20 border border-warmBeige/40 shadow-xs">
+                  {chunk.items.map((memory, localIdx) => {
+                    const globalIdx = chunk.startIndex + localIdx;
+                    return (
+                      <GalleryCard
+                        key={memory.publicId}
+                        memory={memory}
+                        index={globalIdx}
+                        onClick={() => openLightbox(globalIdx)}
+                      />
+                    );
+                  })}
+                </div>
+              ))}
+            </div>
+
+            {/* Vista Desktop: Mosaico fluido continuo */}
+            <div className="hidden md:block columns-3 lg:columns-4 gap-4 space-y-4">
+              {memories.map((memory, index) => (
+                <div key={memory.publicId} className="break-inside-avoid mb-4">
+                  <GalleryCard
+                    memory={memory}
+                    index={index}
+                    onClick={() => openLightbox(index)}
+                  />
+                </div>
+              ))}
+            </div>
           </div>
         )}
       </div>

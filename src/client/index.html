@@ -11,11 +11,105 @@
   <link
     href="https://fonts.googleapis.com/css2?family=Alex+Brush&family=Dancing+Script:wght@400;600;700&family=Great+Vibes&family=Inter:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap"
     rel="stylesheet">
+
+  <style>
+    /* Estilos para el Preloader / Splash Screen */
+    #preloader {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100vh;
+      background-color: #FAF9F6;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+      transition: opacity 0.8s ease, visibility 0.8s ease;
+    }
+
+    .loader-content {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+    }
+
+    /* Animación de pulso suave en la ilustración del bebé / logo */
+    .loader-image {
+      width: 130px;
+      height: 130px;
+      object-fit: contain;
+      border-radius: 50%;
+      padding: 6px;
+      background-color: #ffffff;
+      box-shadow: 0 10px 25px -5px rgba(201, 169, 98, 0.25), 0 8px 10px -6px rgba(0, 0, 0, 0.04);
+      animation: pulse 1.5s infinite ease-in-out;
+    }
+
+    /* Anillo de carga giratorio en acento dorado */
+    .loader-spinner {
+      width: 44px;
+      height: 44px;
+      border: 3.5px solid rgba(201, 169, 98, 0.2);
+      border-top-color: #C9A962;
+      border-radius: 50%;
+      animation: spin 0.9s linear infinite;
+    }
+
+    /* Animaciones de pulso y rotación */
+    @keyframes pulse {
+
+      0%,
+      100% {
+        transform: scale(1);
+        opacity: 0.92;
+      }
+
+      50% {
+        transform: scale(1.08);
+        opacity: 1;
+      }
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    /* Clase para ocultar el preloader */
+    #preloader.fade-out {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+  </style>
 </head>
 
 <body>
+  <!-- Pantalla de Carga Inicial -->
+  <div id="preloader">
+    <div class="loader-content">
+      <img src="/logo.png" alt="Baby Shower..." class="loader-image" />
+      <div class="loader-spinner"></div>
+    </div>
+  </div>
+
   <div id="root"></div>
   <script type="module" src="/main.tsx"></script>
+
+  <script>
+    // Ocultar el preloader suavemente cuando termine de cargar la página
+    window.addEventListener("load", function () {
+      const preloader = document.getElementById("preloader");
+      if (preloader) {
+        setTimeout(function () {
+          preloader.classList.add("fade-out");
+        }, 4000); // 4 segundos de animación en pantalla
+      }
+    });
+  </script>
 </body>
 
 </html>
