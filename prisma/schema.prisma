@@ -1,0 +1,211 @@
+// prisma/schema.prisma
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ============================================
+// EVENTO
+// ============================================
+model Event {
+  id            String   @id @default(cuid())
+  publicId      String   @unique // ID público para URLs
+  title         String
+  babyName      String?  @default("Nuestro bebé")
+  description   String?  @db.Text
+  
+  // Fechas y ubicación
+  eventDate     DateTime
+  eventTime     String
+  location      String
+  address       String
+  latitude      Float?
+  longitude     Float?
+  
+  // Imágenes y media
+  heroImage     String?
+  locationImage String?
+  
+  // Contenido narrativo
+  storyTitle    String?
+  storyContent  String?  @db.Text
+  revelationTitle String?
+  revelationContent String? @db.Text
+  revelationMediaUrl String?
+  revelationMediaType String? // 'image' | 'video'
+  
+  // Configuración
+  isRevealed    Boolean  @default(false)
+  primaryColor  String?  @default("#8B7355") // Beige cálido
+  secondaryColor String? @default("#D4C4B7")
+  
+  // SEO
+  metaTitle     String?
+  metaDescription String? @db.Text
+  ogImage       String?
+  
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  
+  // Relaciones
+  guests        Guest[]
+  gifts         Gift[]
+  memories      Memory[]
+  adminUsers    AdminUser[]
+  
+  @@index([publicId])
+}
+
+// ============================================
+// INVITADO
+// ============================================
+model Guest {
+  id                String   @id @default(cuid())
+  publicId          String   @unique
+  
+  eventId           String
+  event             Event    @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  
+  name              String
+  phone             String
+  email             String?
+  
+  // Código de invitación único
+  invitationCode    String   @unique // Formato: BS-XXXX
+  
+  // Estado de asistencia
+  attendanceStatus  AttendanceStatus @default(PENDING)
+  attendanceUpdatedAt DateTime?
+  
+  // Estado del invitado
+  isActive          Boolean  @default(true)
+  
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  
+  // Relaciones
+  reservations      GiftReservation[]
+  
+  @@index([invitationCode])
+  @@index([eventId])
+  @@index([attendanceStatus])
+}
+
+enum AttendanceStatus {
+  PENDING
+  CONFIRMED
+  DECLINED
+}
+
+// ============================================
+// REGALO
+// ============================================
+model Gift {
+  id              String   @id @default(cuid())
+  publicId        String   @unique
+  
+  eventId         String
+  event           Event    @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  
+  name            String
+  description     String?  @db.Text
+  imageUrl        String?
+  category        String?  // 'ropa', 'accesorios', 'juguetes', 'habitación', 'otros'
+  
+  // Cuántas veces puede ser seleccionado este regalo
+  maxReservations Int      @default(1)
+
+  // Estado (derivado: isReserved = true cuando reservations.length >= maxReservations)
+  isActive        Boolean  @default(true)
+  isReserved      Boolean  @default(false)
+  
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  
+  // Relaciones
+  reservations    GiftReservation[]
+  
+  @@index([eventId])
+  @@index([isActive])
+  @@index([isReserved])
+}
+
+// ============================================
+// RESERVA DE REGALO
+// ============================================
+model GiftReservation {
+  id          String   @id @default(cuid())
+  
+  giftId      String
+  gift        Gift     @relation(fields: [giftId], references: [id], onDelete: Cascade)
+  
+  guestId     String
+  guest       Guest    @relation(fields: [guestId], references: [id], onDelete: Cascade)
+  
+  reservedAt  DateTime @default(now())
+  
+  // Un invitado no puede reservar el mismo regalo más de una vez
+  @@unique([giftId, guestId])
+  @@index([guestId])
+  @@index([giftId])
+}
+
+// ============================================
+// RECUERDO
+// ============================================
+model Memory {
+  id          String   @id @default(cuid())
+  publicId    String   @unique
+  
+  eventId     String
+  event       Event    @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  
+  title       String
+  description String?  @db.Text
+  
+  mediaUrl    String
+  mediaType   MediaType // 'image' | 'video'
+  
+  eventDate   DateTime?
+  sortOrder   Int      @default(0)
+  
+  isPublished Boolean  @default(false)
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  @@index([eventId])
+  @@index([isPublished])
+  @@index([sortOrder])
+}
+
+enum MediaType {
+  IMAGE
+  VIDEO
+}
+
+// ============================================
+// USUARIO ADMINISTRADOR
+// ============================================
+model AdminUser {
+  id           String   @id @default(cuid())
+  
+  eventId      String
+  event        Event    @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  
+  email        String   @unique
+  passwordHash String
+  
+  name         String?
+  
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  
+  @@index([eventId])
+  @@index([email])
+}
