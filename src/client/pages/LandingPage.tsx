@@ -3,7 +3,6 @@ import { StorySection } from '../components/landing/StorySection';
 import { RevelationSection } from '../components/landing/RevelationSection';
 import { EventInfoSection } from '../components/landing/EventInfoSection';
 import { GallerySection } from '../components/landing/GallerySection';
-import { Footer } from '../components/landing/Footer';
 import { Loading } from '../components/ui/Loading';
 import { useEvent } from '../hooks/useEvent';
 
@@ -34,6 +33,7 @@ const LandingPage = () => {
       <HeroSection
         title={event.title}
         babyName={event.babyName}
+        description={event.description}
         heroImage={event.heroImage}
         primaryColor={event.primaryColor}
       />
@@ -59,7 +59,6 @@ const LandingPage = () => {
         primaryColor={event.primaryColor}
       />
       <GallerySection primaryColor={event.primaryColor} />
-      <Footer />
     </div>
   );
 };

@@ -7,6 +7,8 @@ import Captions from 'yet-another-react-lightbox/plugins/captions';
 import 'yet-another-react-lightbox/styles.css';
 import 'yet-another-react-lightbox/plugins/captions.css';
 import { Camera, Play, Image as ImageIcon } from 'lucide-react';
+import { SectionNavButton } from './SectionNavButton';
+import { Footer } from './Footer';
 
 interface PublicMemory {
   publicId: string;
@@ -145,26 +147,26 @@ export const GallerySection = ({ primaryColor }: GallerySectionProps) => {
   if (!loading && memories.length === 0) return null;
 
   return (
-    <section ref={sectionRef} className="py-20 px-4 bg-offWhite" id="galeria">
-      <div className="max-w-6xl mx-auto">
+    <section ref={sectionRef} className="min-h-screen flex flex-col items-center justify-between pt-12 pb-0 px-0 bg-white select-none" id="galeria">
+      <div className="max-w-6xl mx-auto my-auto w-full px-4">
         {/* Encabezado */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={sectionInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.6 }}
-          className="text-center mb-12"
+          className="text-center mb-8"
         >
           <div
-            className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-sm font-medium mb-4"
+            className="inline-flex items-center gap-2 px-4 py-1 rounded-full text-xs sm:text-sm font-medium mb-2.5"
             style={{ backgroundColor: `${primaryColor ?? '#C9A962'}20`, color: primaryColor ?? '#C9A962' }}
           >
-            <ImageIcon className="w-4 h-4" />
+            <ImageIcon className="w-3.5 h-3.5" />
             Nuestra historia en imágenes
           </div>
-          <h2 className="text-4xl md:text-5xl font-serif font-bold text-textPrimary mb-4">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-serif font-bold text-textPrimary mb-2">
             Galería de recuerdos
           </h2>
-          <p className="text-textSecondary max-w-md mx-auto">
+          <p className="text-textSecondary text-sm max-w-md mx-auto">
             Momentos especiales que hemos guardado para compartir con ustedes.
           </p>
         </motion.div>
@@ -185,7 +187,7 @@ export const GallerySection = ({ primaryColor }: GallerySectionProps) => {
 
         {/* Masonry grid */}
         {!loading && memories.length > 0 && (
-          <div className="columns-2 md:columns-3 lg:columns-4 gap-4 space-y-4">
+          <div className="columns-2 md:columns-3 lg:columns-4 gap-4 space-y-4 max-h-[48vh] md:max-h-[52vh] overflow-y-auto pr-1">
             {memories.map((memory, index) => (
               <div key={memory.publicId} className="break-inside-avoid mb-4">
                 <GalleryCard
@@ -197,6 +199,14 @@ export const GallerySection = ({ primaryColor }: GallerySectionProps) => {
             ))}
           </div>
         )}
+      </div>
+
+      {/* Contenedor inferior: Botón de retorno e integración del Footer en la misma pantalla */}
+      <div className="w-full flex flex-col items-center mt-auto">
+        <div className="w-full max-w-xl px-4 flex flex-col items-center">
+          <SectionNavButton targetId="hero" direction="up" color={primaryColor} label="Volver al inicio" />
+        </div>
+        <Footer />
       </div>
 
       {/* Lightbox */}
