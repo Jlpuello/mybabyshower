@@ -14,6 +14,7 @@ RUN npm run build:client
 
 # Build stage for backend
 FROM node:20-alpine AS backend-builder
+RUN apk add --no-cache openssl
 WORKDIR /app/backend
 COPY package*.json ./
 RUN npm ci
@@ -26,6 +27,7 @@ RUN npm run build:server
 
 # Production stage
 FROM node:20-alpine AS production
+RUN apk add --no-cache openssl
 WORKDIR /app
 COPY package*.json ./
 RUN npm ci --omit=dev
