@@ -44,6 +44,18 @@ app.use('/api/invitations', guestRoutes);
 app.use('/api/admin', authRoutes);
 app.use('/api/admin', adminRoutes);
 
+// Servir frontend en producción (SPA fallback)
+const publicPath = path.join(process.cwd(), 'public');
+if (fs.existsSync(publicPath)) {
+  app.use(express.static(publicPath));
+  app.get('*', (req, res, next) => {
+    if (req.path.startsWith('/api') || req.path.startsWith('/uploads') || req.path === '/health') {
+      return next();
+    }
+    res.sendFile(path.join(publicPath, 'index.html'));
+  });
+}
+
 // 404 handler
 app.use(notFoundHandler);
 

@@ -19,5 +19,26 @@ services:
       timeout: 5s
       retries: 5
 
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: babyshower-app
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      NODE_ENV: production
+      PORT: 3000
+      DATABASE_URL: "postgresql://babyshower:password@postgres:5432/babyshower?schema=public"
+      JWT_SECRET: "CAMBIAR_POR_CLAVE_JWT_SUPER_SECRETA_EN_PRODUCCION"
+      FRONTEND_URL: "http://localhost:3000"
+    volumes:
+      - uploads_data:/app/uploads
+    depends_on:
+      postgres:
+        condition: service_healthy
+
 volumes:
   postgres_data:
+  uploads_data:
