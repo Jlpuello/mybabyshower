@@ -9,7 +9,7 @@
     "dev:server": "nodemon --exec ts-node src/server/server.ts",
     "build": "npm run build:client && npm run build:server",
     "build:client": "tsc -b tsconfig.app.json tsconfig.node.json && vite build",
-    "build:server": "tsc -p tsconfig.server.json",
+    "build:server": "tsc -p tsconfig.server.json && tsc prisma/seed.ts --module NodeNext --moduleResolution NodeNext --target ES2022 --outDir dist --ignoreConfig --skipLibCheck --types node",
     "lint": "oxlint",
     "preview": "vite preview",
     "test": "jest",
@@ -18,7 +18,7 @@
     "db:generate": "prisma generate",
     "db:push": "prisma db push",
     "db:migrate": "prisma migrate dev",
-    "db:seed": "ts-node-esm prisma/seed.ts",
+    "db:seed": "node dist/seed.js",
     "db:studio": "prisma studio"
   },
   "dependencies": {
