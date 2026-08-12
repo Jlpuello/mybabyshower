@@ -19,9 +19,11 @@ const PORT = process.env.PORT || 3000;
 // Middleware
 app.use(helmet({
   crossOriginResourcePolicy: { policy: 'cross-origin' },
+  contentSecurityPolicy: false,
+  hsts: false,
 }));
 app.use(cors({
-  origin: process.env.FRONTEND_URL || 'http://localhost:5173',
+  origin: process.env.FRONTEND_URL || true,
   credentials: true,
 }));
 app.use(express.json());
