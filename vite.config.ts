@@ -13,7 +13,7 @@ export default defineConfig({
     emptyOutDir: true,
   },
   server: {
-    allowedHosts: ['.trycloudflare.com'],
+    allowedHosts: ['.duckdns.org'],
     port: 5173,
     proxy: {
       '/api': {
