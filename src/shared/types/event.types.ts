@@ -4,6 +4,7 @@ export interface Event {
   title: string;
   babyName: string | null;
   description: string | null;
+  invitationMessage: string | null;
   eventDate: Date;
   eventTime: string;
   location: string;
@@ -34,6 +35,7 @@ export interface EventPublic {
   title: string;
   babyName: string | null;
   description: string | null;
+  invitationMessage: string | null;
   eventDate: Date;
   eventTime: string;
   location: string;

@@ -18,6 +18,7 @@ model Event {
   title         String
   babyName      String?  @default("Nuestro bebé")
   description   String?  @db.Text
+  invitationMessage String? @db.Text
   
   // Fechas y ubicación
   eventDate     DateTime

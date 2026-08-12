@@ -47,15 +47,15 @@ export const EventInfoSection = ({
           Detalles del Evento
         </h2>
 
-        <div className="grid md:grid-cols-2 gap-4 sm:gap-8 items-center">
+        <div className={locationImage ? "grid md:grid-cols-2 gap-6 sm:gap-8 items-center max-w-4xl sm:max-w-5xl mx-auto" : "max-w-xl mx-auto w-full space-y-3 sm:space-y-4"}>
           {/* Info Cards */}
-          <div className="space-y-3 sm:space-y-5">
+          <div className="space-y-3 sm:space-y-4 w-full">
             <div
-              className="bg-white p-3.5 sm:p-5 rounded-xl shadow-soft border"
+              className="bg-white p-4 sm:p-5 rounded-xl shadow-soft border hover:shadow-md transition-shadow"
               style={{ borderColor: `${secColor}60` }}
             >
-              <div className="flex items-start gap-3 sm:gap-4">
-                <Calendar className="w-5 h-5 sm:w-6 sm:h-6 mt-0.5 sm:mt-1 flex-shrink-0" style={{ color: mainColor }} />
+              <div className="flex items-center gap-3.5 sm:gap-4">
+                <Calendar className="w-5 h-5 sm:w-6 sm:h-6 flex-shrink-0" style={{ color: mainColor }} />
                 <div>
                   <h3 className="font-semibold text-textPrimary text-sm sm:text-base mb-0.5">Fecha</h3>
                   <p className="text-textSecondary text-xs sm:text-sm capitalize">{formattedDate}</p>
@@ -64,11 +64,11 @@ export const EventInfoSection = ({
             </div>
 
             <div
-              className="bg-white p-3.5 sm:p-5 rounded-xl shadow-soft border"
+              className="bg-white p-4 sm:p-5 rounded-xl shadow-soft border hover:shadow-md transition-shadow"
               style={{ borderColor: `${secColor}60` }}
             >
-              <div className="flex items-start gap-3 sm:gap-4">
-                <Clock className="w-5 h-5 sm:w-6 sm:h-6 mt-0.5 sm:mt-1 flex-shrink-0" style={{ color: mainColor }} />
+              <div className="flex items-center gap-3.5 sm:gap-4">
+                <Clock className="w-5 h-5 sm:w-6 sm:h-6 flex-shrink-0" style={{ color: mainColor }} />
                 <div>
                   <h3 className="font-semibold text-textPrimary text-sm sm:text-base mb-0.5">Hora</h3>
                   <p className="text-textSecondary text-xs sm:text-sm">{eventTime}</p>
@@ -77,11 +77,11 @@ export const EventInfoSection = ({
             </div>
 
             <div
-              className="bg-white p-3.5 sm:p-5 rounded-xl shadow-soft border"
+              className="bg-white p-4 sm:p-5 rounded-xl shadow-soft border hover:shadow-md transition-shadow"
               style={{ borderColor: `${secColor}60` }}
             >
-              <div className="flex items-start gap-3 sm:gap-4">
-                <MapPin className="w-5 h-5 sm:w-6 sm:h-6 mt-0.5 sm:mt-1 flex-shrink-0" style={{ color: mainColor }} />
+              <div className="flex items-start gap-3.5 sm:gap-4">
+                <MapPin className="w-5 h-5 sm:w-6 sm:h-6 mt-0.5 flex-shrink-0" style={{ color: mainColor }} />
                 <div>
                   <h3 className="font-semibold text-textPrimary text-sm sm:text-base mb-0.5">Ubicación</h3>
                   <p className="text-textSecondary text-xs sm:text-sm font-medium">{location}</p>
@@ -94,13 +94,13 @@ export const EventInfoSection = ({
           {/* Location Image */}
           {locationImage && (
             <div
-              className="rounded-xl overflow-hidden shadow-soft border"
+              className="rounded-xl overflow-hidden shadow-soft border w-full"
               style={{ borderColor: `${secColor}60` }}
             >
               <img
                 src={locationImage}
                 alt={location}
-                className="w-full h-40 sm:h-64 md:h-80 object-cover"
+                className="w-full h-48 sm:h-64 md:h-80 object-cover"
                 loading="lazy"
               />
             </div>

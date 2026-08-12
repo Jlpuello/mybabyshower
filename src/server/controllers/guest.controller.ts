@@ -59,6 +59,7 @@ export const validateInvitation = async (req: Request, res: Response) => {
       address: guest.event.address,
       primaryColor: guest.event.primaryColor,
       secondaryColor: guest.event.secondaryColor,
+      invitationMessage: guest.event.invitationMessage,
       gifts: giftsPublic,
     },
     reservedGift: guest.reservations[0] ? {

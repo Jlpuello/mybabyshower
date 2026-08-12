@@ -5,7 +5,7 @@ import { GiftList } from '../components/guest/GiftList';
 import { GiftReservationModal } from '../components/guest/GiftReservationModal';
 import { Button } from '../components/ui/Button';
 import { Toast } from '../components/ui/Toast';
-import { ArrowLeft, Gift as GiftIcon, Trash2 } from 'lucide-react';
+import { ArrowLeft, Gift as GiftIcon, Trash2, CheckCircle2 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 export const GuestExperience = () => {
@@ -142,14 +142,22 @@ export const GuestExperience = () => {
           Volver al inicio
         </Button>
 
-        <div className="mb-8">
+        <div
+          className="bg-white p-5 sm:p-6 rounded-2xl shadow-soft mb-8 border"
+          style={{ borderColor: `${secondaryColor}60` }}
+        >
           <h1
             className="text-3xl sm:text-4xl font-serif font-bold text-textPrimary mb-2"
             style={{ color: primaryColor }}
           >
             ¡Hola, {guestData.name}!
           </h1>
-          <p className="text-textSecondary text-base">
+          {guestData.event.invitationMessage && (
+            <p className="text-textSecondary text-sm sm:text-base leading-relaxed mb-3 font-normal whitespace-pre-line">
+              {guestData.event.invitationMessage}
+            </p>
+          )}
+          <p className="text-xs sm:text-sm font-semibold uppercase tracking-wider text-textLight">
             {guestData.event.title}
           </p>
         </div>
@@ -168,48 +176,90 @@ export const GuestExperience = () => {
 
         {guestData.reservedGift && (
           <div
-            className="bg-white p-6 rounded-xl shadow-soft mb-8 border"
-            style={{ borderColor: `${secondaryColor}60` }}
+            className="bg-white rounded-2xl shadow-md p-5 sm:p-6 mb-8 border transition-all"
+            style={{ borderColor: `${secondaryColor}80` }}
           >
-            <div className="flex items-start justify-between">
-              <div>
-                <div className="flex items-center gap-2 mb-2">
-                  <GiftIcon className="w-5 h-5" style={{ color: primaryColor }} />
-                  <h3 className="text-lg font-serif font-semibold text-textPrimary">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between pb-4 mb-4 border-b border-gray-100 gap-3">
+              <div className="flex items-center gap-3">
+                <div
+                  className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"
+                  style={{ backgroundColor: `${primaryColor}20`, color: primaryColor }}
+                >
+                  <GiftIcon className="w-5 h-5" />
+                </div>
+                <div>
+                  <h3 className="text-lg font-serif font-bold text-textPrimary">
                     Tu regalo reservado
                   </h3>
-                </div>
-                <p className="text-lg font-medium text-textPrimary">{guestData.reservedGift.name}</p>
-                {guestData.reservedGift.description && (
-                  <p className="text-sm text-textSecondary mt-1">
-                    {guestData.reservedGift.description}
+                  <p className="text-xs text-emerald-600 font-medium flex items-center gap-1 mt-0.5">
+                    <CheckCircle2 className="w-3.5 h-3.5" /> Confirmado para la ocasión
                   </p>
-                )}
+                </div>
               </div>
               <Button
                 variant="outline"
                 onClick={handleCancelReservation}
                 disabled={canceling}
-                className="text-error border-error/30 hover:bg-error/10 hover:border-error"
+                className="text-error border-error/30 hover:bg-error/10 hover:border-error text-xs sm:text-sm self-end sm:self-auto"
               >
-                <Trash2 className="w-4 h-4 mr-2" />
-                {canceling ? 'Cancelando...' : 'Cancelar reserva'}
+                <Trash2 className="w-4 h-4 mr-1.5" />
+                {canceling ? 'Cancelando...' : 'Cambiar / Cancelar reserva'}
               </Button>
+            </div>
+
+            <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 items-center sm:items-start">
+              {guestData.reservedGift.imageUrl ? (
+                <img
+                  src={guestData.reservedGift.imageUrl}
+                  alt={guestData.reservedGift.name}
+                  className="w-full sm:w-36 h-36 object-cover rounded-xl border flex-shrink-0 shadow-xs"
+                  style={{ borderColor: `${secondaryColor}60` }}
+                />
+              ) : (
+                <div
+                  className="w-full sm:w-36 h-36 rounded-xl flex flex-col items-center justify-center flex-shrink-0 border"
+                  style={{ backgroundColor: `${secondaryColor}20`, borderColor: `${secondaryColor}50` }}
+                >
+                  <GiftIcon className="w-10 h-10 mb-1" style={{ color: primaryColor }} />
+                  <span className="text-xs text-textSecondary font-medium">Sin fotografía</span>
+                </div>
+              )}
+
+              <div className="flex-1 text-center sm:text-left w-full">
+                {guestData.reservedGift.category && (
+                  <span
+                    className="text-[11px] font-semibold uppercase tracking-wider px-2.5 py-0.5 rounded-full inline-block mb-1.5"
+                    style={{ backgroundColor: `${secondaryColor}30`, color: primaryColor }}
+                  >
+                    {guestData.reservedGift.category}
+                  </span>
+                )}
+                <h4 className="text-xl font-serif font-bold text-textPrimary mb-1">
+                  {guestData.reservedGift.name}
+                </h4>
+                {guestData.reservedGift.description && (
+                  <p className="text-sm text-textSecondary leading-relaxed">
+                    {guestData.reservedGift.description}
+                  </p>
+                )}
+              </div>
             </div>
           </div>
         )}
 
-        <div>
-          <h2 className="text-2xl font-serif font-bold text-textPrimary mb-6">
-            Lista de regalos
-          </h2>
-          <GiftList
-            gifts={gifts}
-            onReserve={handleReserveGift}
-            primaryColor={primaryColor}
-            secondaryColor={secondaryColor}
-          />
-        </div>
+        {!guestData.reservedGift && (
+          <div>
+            <h2 className="text-2xl font-serif font-bold text-textPrimary mb-6">
+              Lista de regalos
+            </h2>
+            <GiftList
+              gifts={gifts}
+              onReserve={handleReserveGift}
+              primaryColor={primaryColor}
+              secondaryColor={secondaryColor}
+            />
+          </div>
+        )}
       </div>
 
       <GiftReservationModal

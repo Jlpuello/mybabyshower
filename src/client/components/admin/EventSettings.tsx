@@ -22,6 +22,7 @@ export interface EventData {
   title: string;
   babyName: string | null;
   description: string | null;
+  invitationMessage: string | null;
   eventDate: string;
   eventTime: string;
   location: string;
@@ -54,6 +55,7 @@ export const EventSettings = () => {
   const [title, setTitle] = useState('');
   const [babyName, setBabyName] = useState('');
   const [description, setDescription] = useState('');
+  const [invitationMessage, setInvitationMessage] = useState('');
   const [eventDate, setEventDate] = useState('');
   const [eventTime, setEventTime] = useState('');
   const [location, setLocation] = useState('');
@@ -99,6 +101,7 @@ export const EventSettings = () => {
       setTitle(data.title || '');
       setBabyName(data.babyName || '');
       setDescription(data.description || '');
+      setInvitationMessage(data.invitationMessage || '');
       setEventDate(data.eventDate ? new Date(data.eventDate).toISOString().split('T')[0] : '');
       setEventTime(data.eventTime || '');
       setLocation(data.location || '');
@@ -180,6 +183,7 @@ export const EventSettings = () => {
       formData.append('title', title.trim());
       formData.append('babyName', babyName.trim());
       formData.append('description', description.trim());
+      formData.append('invitationMessage', invitationMessage.trim());
       formData.append('eventDate', eventDate);
       formData.append('eventTime', eventTime.trim());
       formData.append('location', location.trim());
@@ -321,13 +325,26 @@ export const EventSettings = () => {
 
             <div>
               <label className="block text-sm font-medium text-textSecondary mb-1">
-                Descripción General
+                Descripción General (Para la portada / Hero)
               </label>
               <textarea
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
-                placeholder="Un mensaje especial de bienvenida para los invitados..."
-                rows={4}
+                placeholder="Un mensaje corto para la portada del evento..."
+                rows={2}
+                className="w-full px-4 py-2.5 rounded-lg border border-warmBeige bg-white text-textPrimary placeholder:text-textLight focus:outline-none focus:ring-2 focus:ring-goldAccent text-sm resize-none"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-textSecondary mb-1">
+                Mensaje de Invitación para Invitados (Aparece en el portal /guest)
+              </label>
+              <textarea
+                value={invitationMessage}
+                onChange={(e) => setInvitationMessage(e.target.value)}
+                placeholder="Palabras especiales de invitación de bienvenida para los invitados al ingresar con su código..."
+                rows={3}
                 className="w-full px-4 py-2.5 rounded-lg border border-warmBeige bg-white text-textPrimary placeholder:text-textLight focus:outline-none focus:ring-2 focus:ring-goldAccent text-sm resize-none"
               />
             </div>
