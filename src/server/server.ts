@@ -16,6 +16,9 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+// Trust proxy para rate-limit cuando está detrás de proxy/reverse proxy (Docker, nginx, etc.)
+app.set('trust proxy', true);
+
 // Middleware
 app.use(helmet({
   crossOriginResourcePolicy: { policy: 'cross-origin' },
