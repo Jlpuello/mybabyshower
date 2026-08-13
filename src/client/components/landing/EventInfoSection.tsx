@@ -106,8 +106,6 @@ export const EventInfoSection = ({
             </div>
           )}
         </div>
-
-        </div>
       </div>
 
       {/* Botón de ingreso con código de invitación - Sticky en mobile */}

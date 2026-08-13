@@ -8,7 +8,7 @@ services:
       POSTGRES_PASSWORD: password
       POSTGRES_DB: babyshower
     ports:
-      - "5432:5432"
+      - "5433:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
@@ -24,13 +24,13 @@ services:
     container_name: babyshower-app
     restart: unless-stopped
     ports:
-      - "3000:3000"
+      - "3001:3000"
     environment:
       NODE_ENV: production
       PORT: 3000
       DATABASE_URL: "postgresql://babyshower:password@postgres:5432/babyshower?schema=public"
       JWT_SECRET: "CAMBIAR_POR_CLAVE_JWT_SUPER_SECRETA_EN_PRODUCCION"
-      FRONTEND_URL: "http://localhost:3000"
+      FRONTEND_URL: "http://localhost:3001"
     volumes:
       - uploads_data:/app/uploads
     depends_on:
