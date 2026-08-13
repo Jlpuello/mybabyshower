@@ -137,7 +137,27 @@ export const updateEvent = async (req: AuthRequest, res: Response) => {
     secondaryColor,
     metaTitle,
     metaDescription,
+    removeHeroImage,
+    removeLocationImage,
   } = req.body;
+
+  // Eliminar heroImage si se solicita
+  if (removeHeroImage === 'true' && heroImage) {
+    if (heroImage.startsWith('/uploads/')) {
+      const oldPath = path.join(process.cwd(), heroImage);
+      if (fs.existsSync(oldPath)) fs.unlinkSync(oldPath);
+    }
+    heroImage = null;
+  }
+
+  // Eliminar locationImage si se solicita
+  if (removeLocationImage === 'true' && locationImage) {
+    if (locationImage.startsWith('/uploads/')) {
+      const oldPath = path.join(process.cwd(), locationImage);
+      if (fs.existsSync(oldPath)) fs.unlinkSync(oldPath);
+    }
+    locationImage = null;
+  }
 
   const updatedEvent = await prisma.event.update({
     where: { id: eventId },

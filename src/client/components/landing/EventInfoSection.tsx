@@ -107,18 +107,20 @@ export const EventInfoSection = ({
           )}
         </div>
 
-        {/* Botón de ingreso con código de invitación */}
-        <div className="mt-4 sm:mt-8 text-center pb-1">
-          <button
-            onClick={() => navigate('/guest')}
-            className="px-6 sm:px-8 py-2.5 sm:py-3.5 rounded-xl text-xs sm:text-base font-medium transition-all shadow-md hover:shadow-lg hover:opacity-95 text-white active:scale-95 cursor-pointer"
-            style={{
-              backgroundColor: primaryColor || '#C9A962',
-            }}
-          >
-            Ingresar con código de invitación
-          </button>
         </div>
+      </div>
+
+      {/* Botón de ingreso con código de invitación - Sticky en mobile */}
+      <div className="sticky bottom-4 z-40 md:static md:z-auto md:bottom-auto px-4">
+        <button
+          onClick={() => navigate('/guest')}
+          className="w-full max-w-md mx-auto px-6 sm:px-8 py-2.5 sm:py-3.5 rounded-xl text-xs sm:text-base font-medium transition-all shadow-md hover:shadow-lg hover:opacity-95 text-white active:scale-95 cursor-pointer"
+          style={{
+            backgroundColor: primaryColor || '#C9A962',
+          }}
+        >
+          Ingresar con código de invitación
+        </button>
       </div>
 
       <SectionNavButton targetId={['galeria', 'hero']} color={primaryColor} />

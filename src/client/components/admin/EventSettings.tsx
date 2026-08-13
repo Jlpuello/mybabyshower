@@ -13,6 +13,7 @@ import {
   CheckCircle2,
   AlertCircle,
   FileText,
+  Trash2,
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -199,8 +200,18 @@ export const EventSettings = () => {
       formData.append('revelationContent', revelationContent.trim());
       formData.append('isRevealed', String(isRevealed));
 
-      if (heroImageFile) formData.append('heroImage', heroImageFile);
-      if (locationImageFile) formData.append('locationImage', locationImageFile);
+      if (heroImageFile) {
+        formData.append('heroImage', heroImageFile);
+      } else if (heroImagePreview === null && heroImageFile === null) {
+        formData.append('removeHeroImage', 'true');
+      }
+
+      if (locationImageFile) {
+        formData.append('locationImage', locationImageFile);
+      } else if (locationImagePreview === null && locationImageFile === null) {
+        formData.append('removeLocationImage', 'true');
+      }
+
       if (storyImageFile) formData.append('storyImage', storyImageFile);
       if (revelationMediaFile) formData.append('revelationMedia', revelationMediaFile);
 
@@ -488,13 +499,25 @@ export const EventSettings = () => {
               {heroImagePreview ? (
                 <div className="relative w-full aspect-video rounded-xl overflow-hidden border border-warmBeige group bg-gray-100">
                   <img src={heroImagePreview} alt="Hero" className="w-full h-full object-cover" />
-                  <button
-                    type="button"
-                    onClick={() => heroInputRef.current?.click()}
-                    className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white font-medium text-sm gap-2"
-                  >
-                    <Upload className="w-5 h-5" /> Cambiar imagen
-                  </button>
+                  <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-3">
+                    <button
+                      type="button"
+                      onClick={() => heroInputRef.current?.click()}
+                      className="text-white font-medium text-sm flex items-center gap-2 hover:text-white/80"
+                    >
+                      <Upload className="w-5 h-5" /> Cambiar
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setHeroImagePreview(null);
+                        setHeroImageFile(null);
+                      }}
+                      className="text-red-300 font-medium text-sm flex items-center gap-2 hover:text-red-100"
+                    >
+                      <Trash2 className="w-5 h-5" /> Eliminar
+                    </button>
+                  </div>
                 </div>
               ) : (
                 <button
@@ -524,13 +547,25 @@ export const EventSettings = () => {
               {locationImagePreview ? (
                 <div className="relative w-full aspect-video rounded-xl overflow-hidden border border-warmBeige group bg-gray-100">
                   <img src={locationImagePreview} alt="Lugar" className="w-full h-full object-cover" />
-                  <button
-                    type="button"
-                    onClick={() => locationInputRef.current?.click()}
-                    className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white font-medium text-sm gap-2"
-                  >
-                    <Upload className="w-5 h-5" /> Cambiar imagen
-                  </button>
+                  <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-3">
+                    <button
+                      type="button"
+                      onClick={() => locationInputRef.current?.click()}
+                      className="text-white font-medium text-sm flex items-center gap-2 hover:text-white/80"
+                    >
+                      <Upload className="w-5 h-5" /> Cambiar
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setLocationImagePreview(null);
+                        setLocationImageFile(null);
+                      }}
+                      className="text-red-300 font-medium text-sm flex items-center gap-2 hover:text-red-100"
+                    >
+                      <Trash2 className="w-5 h-5" /> Eliminar
+                    </button>
+                  </div>
                 </div>
               ) : (
                 <button
