@@ -9,6 +9,7 @@ export interface Event {
   eventTime: string;
   location: string;
   address: string;
+  googleMapsUrl?: string | null;
   latitude: number | null;
   longitude: number | null;
   heroImage: string | null;
@@ -40,6 +41,7 @@ export interface EventPublic {
   eventTime: string;
   location: string;
   address: string;
+  googleMapsUrl?: string | null;
   latitude: number | null;
   longitude: number | null;
   heroImage: string | null;

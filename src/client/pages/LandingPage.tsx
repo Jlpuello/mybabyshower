@@ -79,6 +79,7 @@ const LandingPage = () => {
         eventTime={event.eventTime}
         location={event.location}
         address={event.address}
+        googleMapsUrl={event.googleMapsUrl}
         locationImage={event.locationImage}
         primaryColor={event.primaryColor}
         secondaryColor={event.secondaryColor}

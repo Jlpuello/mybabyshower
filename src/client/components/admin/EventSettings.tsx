@@ -33,6 +33,7 @@ export interface EventData {
   eventTime: string;
   location: string;
   address: string;
+  googleMapsUrl: string | null;
   latitude: number | null;
   longitude: number | null;
   heroImage: string | null;
@@ -66,6 +67,7 @@ export const EventSettings = () => {
   const [eventTime, setEventTime] = useState('');
   const [location, setLocation] = useState('');
   const [address, setAddress] = useState('');
+  const [googleMapsUrl, setGoogleMapsUrl] = useState('');
   const [latitude, setLatitude] = useState('');
   const [longitude, setLongitude] = useState('');
   const [primaryColor, setPrimaryColor] = useState('#8B7355');
@@ -127,6 +129,7 @@ export const EventSettings = () => {
       setEventTime(data.eventTime || '');
       setLocation(data.location || '');
       setAddress(data.address || '');
+      setGoogleMapsUrl(data.googleMapsUrl || '');
       setLatitude(data.latitude !== null && data.latitude !== undefined ? String(data.latitude) : '');
       setLongitude(data.longitude !== null && data.longitude !== undefined ? String(data.longitude) : '');
       setPrimaryColor(data.primaryColor || '#8B7355');
@@ -211,6 +214,7 @@ export const EventSettings = () => {
       formData.append('eventTime', eventTime.trim());
       formData.append('location', location.trim());
       formData.append('address', address.trim());
+      formData.append('googleMapsUrl', googleMapsUrl.trim());
       if (latitude) formData.append('latitude', latitude);
       if (longitude) formData.append('longitude', longitude);
       formData.append('primaryColor', primaryColor);
@@ -483,25 +487,17 @@ export const EventSettings = () => {
               required
             />
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
+            <div className="pt-2 space-y-1">
               <Input
-                id="event-lat"
-                label="Latitud GPS (Opcional)"
-                type="number"
-                step="any"
-                value={latitude}
-                onChange={(e) => setLatitude(e.target.value)}
-                placeholder="Ej: 4.6097"
+                id="event-map-url"
+                label="Enlace de Google Maps / Waze (Opcional)"
+                value={googleMapsUrl}
+                onChange={(e) => setGoogleMapsUrl(e.target.value)}
+                placeholder="Ej: https://maps.app.goo.gl/... o https://goo.gl/maps/..."
               />
-              <Input
-                id="event-lng"
-                label="Longitud GPS (Opcional)"
-                type="number"
-                step="any"
-                value={longitude}
-                onChange={(e) => setLongitude(e.target.value)}
-                placeholder="Ej: -74.0817"
-              />
+              <p className="text-xs text-textLight">
+                Al tocar el cuadro de ubicación en la invitación, se copiará la dirección y abrirá este enlace automáticamente.
+              </p>
             </div>
           </div>
         )}

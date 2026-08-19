@@ -34,6 +34,11 @@ export const updateEventSchema = z.object({
     .min(2, 'La dirección es requerida')
     .max(300, 'La dirección es demasiado larga')
     .trim(),
+  googleMapsUrl: z
+    .string()
+    .optional()
+    .or(z.literal(''))
+    .transform((v) => (v === '' ? undefined : v)),
   latitude: z
     .coerce.number()
     .optional()
