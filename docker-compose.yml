@@ -32,6 +32,8 @@ services:
       JWT_SECRET: "CAMBIAR_POR_CLAVE_JWT_SUPER_SECRETA_EN_PRODUCCION"
       FRONTEND_URL: "http://localhost:3001"
     volumes:
+      - .:/app
+      - /app/node_modules
       - uploads_data:/app/uploads
     depends_on:
       postgres:

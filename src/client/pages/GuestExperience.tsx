@@ -7,9 +7,14 @@ import { Button } from '../components/ui/Button';
 import { Toast } from '../components/ui/Toast';
 import { ArrowLeft, Gift as GiftIcon, Trash2, CheckCircle2 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { useSEO } from '../hooks/useSEO';
 
 export const GuestExperience = () => {
   const navigate = useNavigate();
+  useSEO({
+    title: 'Confirmar Asistencia - Baby Shower',
+    description: 'Ingresa tu código de invitación para confirmar asistencia y ver la lista de regalos.',
+  });
   const [guestData, setGuestData] = useState<any>(null);
   const [gifts, setGifts] = useState<any[]>([]);
   const [selectedGift, setSelectedGift] = useState<any>(null);

@@ -4,14 +4,20 @@ import { RouterProvider } from 'react-router-dom'
 import './styles/index.css'
 import { router } from './router'
 
-window.addEventListener('load', () => {
+const removePreloader = () => {
   const preloader = document.getElementById('preloader')
-  if (preloader) {
-    setTimeout(() => {
-      preloader.classList.add('fade-out')
-    }, 2000)
+  if (preloader && !preloader.classList.contains('fade-out')) {
+    preloader.classList.add('fade-out')
   }
-})
+}
+
+if (document.readyState === 'complete') {
+  setTimeout(removePreloader, 300)
+} else {
+  window.addEventListener('load', () => setTimeout(removePreloader, 300))
+  // Fallback de seguridad por si el evento load ya pasó o se demora
+  setTimeout(removePreloader, 2500)
+}
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>

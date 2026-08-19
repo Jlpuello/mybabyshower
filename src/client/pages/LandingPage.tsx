@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { HeroSection } from '../components/landing/HeroSection';
 import { StorySection } from '../components/landing/StorySection';
 import { RevelationSection } from '../components/landing/RevelationSection';
@@ -5,9 +6,28 @@ import { EventInfoSection } from '../components/landing/EventInfoSection';
 import { GallerySection } from '../components/landing/GallerySection';
 import { Loading } from '../components/ui/Loading';
 import { useEvent } from '../hooks/useEvent';
+import { useSEO } from '../hooks/useSEO';
 
 const LandingPage = () => {
   const { event, loading, error } = useEvent();
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search);
+      const codeParam = params.get('code');
+      if (codeParam) {
+        const sanitized = codeParam.replace(/[^a-zA-Z0-9-]/g, '').toUpperCase();
+        sessionStorage.setItem('invitation_code', sanitized);
+      }
+    }
+  }, []);
+
+  useSEO({
+    title: event?.title,
+    description: event?.description,
+    metaTitle: (event as any)?.metaTitle,
+    metaDescription: (event as any)?.metaDescription,
+  });
 
   if (loading) {
     return (

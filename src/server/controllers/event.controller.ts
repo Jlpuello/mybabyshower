@@ -44,6 +44,9 @@ export const getEvent = async (_req: unknown, res: Response) => {
     isRevealed: event.isRevealed,
     primaryColor: event.primaryColor,
     secondaryColor: event.secondaryColor,
+    metaTitle: event.metaTitle,
+    metaDescription: event.metaDescription,
+    ogImage: event.ogImage,
   };
 
   setCache(cacheKey, eventPublic, 300); // Cache por 5 minutos

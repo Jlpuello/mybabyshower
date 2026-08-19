@@ -8,9 +8,14 @@ import { EventSettings } from '../components/admin/EventSettings';
 import { Button } from '../components/ui/Button';
 import { LogOut, LayoutDashboard, Users, Gift, Image as ImageIcon, Settings } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { useSEO } from '../hooks/useSEO';
 
 export const AdminPanel = () => {
   const navigate = useNavigate();
+  useSEO({
+    title: 'Panel Administrativo - Baby Shower',
+    description: 'Administración del evento de Baby Shower',
+  });
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [activeTab, setActiveTab] = useState<'dashboard' | 'guests' | 'gifts' | 'memories' | 'event'>(
     'dashboard'
@@ -118,12 +123,20 @@ export const AdminPanel = () => {
     setGifts((prev) => [gift, ...prev]);
   };
 
+  const handleGiftUpdated = (updated: GiftRow) => {
+    setGifts((prev) => prev.map((g) => (g.publicId === updated.publicId ? updated : g)));
+  };
+
   const handleGiftDeleted = (publicId: string) => {
     setGifts((prev) => prev.filter((g) => g.publicId !== publicId));
   };
 
   const handleMemoryCreated = (memory: MemoryRow) => {
     setMemories((prev) => [...prev, memory]);
+  };
+
+  const handleMemoryUpdated = (updated: MemoryRow) => {
+    setMemories((prev) => prev.map((m) => (m.publicId === updated.publicId ? updated : m)));
   };
 
   const handleMemoryDeleted = (publicId: string) => {
@@ -176,53 +189,53 @@ export const AdminPanel = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-offWhite">
-      <header className="bg-white shadow-sm sticky top-0 z-10">
-        <div className="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
-          <h1 className="text-2xl font-serif font-bold text-textPrimary">Panel Administrativo</h1>
-          <Button variant="ghost" onClick={handleLogout}>
-            <LogOut className="w-4 h-4 mr-2" />
-            Cerrar sesión
-          </Button>
+    <div className="min-h-screen bg-offWhite pb-16">
+      <header className="bg-white border-b border-warmBeige/60 sticky top-0 z-30 shadow-xs">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between h-16">
+            <div className="flex items-center gap-3">
+              <span className="font-serif font-bold text-xl text-textPrimary">
+                Panel de Administración
+              </span>
+              <span className="bg-goldAccent/15 text-goldAccent text-xs font-semibold px-2.5 py-0.5 rounded-full border border-goldAccent/30">
+                Event Admin
+              </span>
+            </div>
+            <div className="flex items-center gap-2 sm:gap-4">
+              <Button variant="outline" size="sm" onClick={() => navigate('/')}>
+                Ver sitio
+              </Button>
+              <Button variant="ghost" size="sm" onClick={handleLogout} className="text-textSecondary hover:text-red-600">
+                <LogOut className="w-4 h-4 mr-1.5" />
+                Salir
+              </Button>
+            </div>
+          </div>
+
+          <nav className="flex space-x-1 sm:space-x-4 overflow-x-auto py-2 border-t border-gray-100 no-scrollbar">
+            {tabs.map((tab) => {
+              const Icon = tab.icon;
+              const isActive = activeTab === tab.id;
+              return (
+                <button
+                  key={tab.id}
+                  onClick={() => setActiveTab(tab.id)}
+                  className={`flex items-center gap-2 px-3 sm:px-4 py-2 text-xs sm:text-sm font-medium rounded-lg transition-colors whitespace-nowrap cursor-pointer ${
+                    isActive
+                      ? 'bg-goldAccent text-white shadow-xs'
+                      : 'text-textSecondary hover:text-textPrimary hover:bg-warmBeige/40'
+                  }`}
+                >
+                  <Icon className="w-4 h-4" />
+                  {tab.label}
+                </button>
+              );
+            })}
+          </nav>
         </div>
       </header>
 
-      <div className="max-w-7xl mx-auto px-4 py-8">
-        {/* Tabs */}
-        <div className="flex gap-1 mb-8 border-b border-gray-200">
-          {tabs.map((tab) => (
-            <button
-              key={tab.id}
-              id={`tab-${tab.id}`}
-              onClick={() => setActiveTab(tab.id)}
-              className={`flex items-center gap-2 px-4 py-3 border-b-2 transition-colors text-sm font-medium ${
-                activeTab === tab.id
-                  ? 'border-goldAccent text-textPrimary'
-                  : 'border-transparent text-textSecondary hover:text-textPrimary'
-              }`}
-            >
-              <tab.icon className="w-4 h-4" />
-              {tab.label}
-              {tab.id === 'guests' && guests.length > 0 && (
-                <span className="ml-1 px-1.5 py-0.5 text-xs rounded-full bg-goldAccent/20 text-textPrimary font-semibold">
-                  {guests.length}
-                </span>
-              )}
-              {tab.id === 'gifts' && gifts.length > 0 && (
-                <span className="ml-1 px-1.5 py-0.5 text-xs rounded-full bg-goldAccent/20 text-textPrimary font-semibold">
-                  {gifts.length}
-                </span>
-              )}
-              {tab.id === 'memories' && memories.length > 0 && (
-                <span className="ml-1 px-1.5 py-0.5 text-xs rounded-full bg-goldAccent/20 text-textPrimary font-semibold">
-                  {memories.length}
-                </span>
-              )}
-            </button>
-          ))}
-        </div>
-
-        {/* Contenido */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-6">
         {activeTab === 'dashboard' && <Dashboard stats={stats} />}
         {activeTab === 'guests' && (
           loadingGuests ? (
@@ -252,6 +265,7 @@ export const AdminPanel = () => {
             <GiftsTable
               gifts={gifts}
               onGiftCreated={handleGiftCreated}
+              onGiftUpdated={handleGiftUpdated}
               onGiftDeleted={handleGiftDeleted}
             />
           )
@@ -268,6 +282,7 @@ export const AdminPanel = () => {
             <MemoriesGrid
               memories={memories}
               onMemoryCreated={handleMemoryCreated}
+              onMemoryUpdated={handleMemoryUpdated}
               onMemoryDeleted={handleMemoryDeleted}
               onMemoryToggled={handleMemoryToggled}
               onReorder={handleReorder}

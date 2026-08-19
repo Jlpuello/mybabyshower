@@ -14,6 +14,11 @@ import {
   AlertCircle,
   FileText,
   Trash2,
+  Share2,
+  Globe,
+  Copy,
+  Check,
+  Link as LinkIcon,
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -49,7 +54,7 @@ export interface EventData {
 export const EventSettings = () => {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
-  const [activeSection, setActiveSection] = useState<'general' | 'location' | 'images' | 'story'>('general');
+  const [activeSection, setActiveSection] = useState<'general' | 'location' | 'images' | 'story' | 'seo'>('general');
   const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' } | null>(null);
 
   // Form State
@@ -65,6 +70,21 @@ export const EventSettings = () => {
   const [longitude, setLongitude] = useState('');
   const [primaryColor, setPrimaryColor] = useState('#8B7355');
   const [secondaryColor, setSecondaryColor] = useState('#D4C4B7');
+  const [metaTitle, setMetaTitle] = useState('');
+  const [metaDescription, setMetaDescription] = useState('');
+  const [customDomain, setCustomDomain] = useState(typeof window !== 'undefined' ? window.location.origin : '');
+  const [copiedLink, setCopiedLink] = useState(false);
+
+  const handleCopyLink = () => {
+    let shareUrl = customDomain.trim() || (typeof window !== 'undefined' ? window.location.origin : '');
+    if (shareUrl && !shareUrl.startsWith('http://') && !shareUrl.startsWith('https://')) {
+      shareUrl = `https://${shareUrl}`;
+    }
+    navigator.clipboard.writeText(shareUrl);
+    setCopiedLink(true);
+    showToast('¡Enlace copiado al portapapeles!', 'success');
+    setTimeout(() => setCopiedLink(false), 2500);
+  };
 
   // Story & Revelation
   const [storyTitle, setStoryTitle] = useState('');
@@ -111,6 +131,8 @@ export const EventSettings = () => {
       setLongitude(data.longitude !== null && data.longitude !== undefined ? String(data.longitude) : '');
       setPrimaryColor(data.primaryColor || '#8B7355');
       setSecondaryColor(data.secondaryColor || '#D4C4B7');
+      setMetaTitle(data.metaTitle || '');
+      setMetaDescription(data.metaDescription || '');
 
       setStoryTitle(data.storyTitle || '');
       setStoryContent(data.storyContent || '');
@@ -193,6 +215,8 @@ export const EventSettings = () => {
       if (longitude) formData.append('longitude', longitude);
       formData.append('primaryColor', primaryColor);
       formData.append('secondaryColor', secondaryColor);
+      formData.append('metaTitle', metaTitle.trim());
+      formData.append('metaDescription', metaDescription.trim());
 
       formData.append('storyTitle', storyTitle.trim());
       formData.append('storyContent', storyContent.trim());
@@ -252,6 +276,7 @@ export const EventSettings = () => {
     { id: 'location', label: 'Fecha y Ubicación', icon: MapPin },
     { id: 'images', label: 'Imágenes', icon: ImageIcon },
     { id: 'story', label: 'Historia y Revelación', icon: Sparkles },
+    { id: 'seo', label: 'SEO y Redes Sociales', icon: Share2 },
   ];
 
   return (
@@ -731,6 +756,126 @@ export const EventSettings = () => {
                     <span className="text-xs font-medium text-textSecondary">Subir media de revelación</span>
                   </button>
                 )}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* SECTION: SEO & SOCIAL PREVIEW */}
+        {activeSection === 'seo' && (
+          <div className="space-y-6 max-w-3xl">
+            <div className="bg-ivory/40 p-5 rounded-xl border border-warmBeige space-y-4">
+              <div className="flex items-center gap-2 mb-2">
+                <Globe className="w-5 h-5 text-goldAccent" />
+                <h3 className="text-md font-serif font-bold text-textPrimary">
+                  Configuración de Meta Etiquetas y Previsualización Social
+                </h3>
+              </div>
+              <p className="text-xs text-textSecondary leading-relaxed">
+                Personaliza cómo se mostrará la tarjeta de invitación cuando compartas el enlace por WhatsApp, Facebook, iMessage, Telegram o motores de búsqueda.
+              </p>
+
+              <Input
+                id="meta-title"
+                label="Meta Título (Título al compartir)"
+                value={metaTitle}
+                onChange={(e) => setMetaTitle(e.target.value)}
+                placeholder={`Ej: ¡Estás invitado al Baby Shower de ${babyName || 'nuestro bebé'}! 👶✨`}
+              />
+
+              <div>
+                <label className="block text-sm font-medium text-textSecondary mb-1">
+                  Meta Descripción (Texto descriptivo al compartir)
+                </label>
+                <textarea
+                  value={metaDescription}
+                  onChange={(e) => setMetaDescription(e.target.value)}
+                  placeholder="Ej: Te esperamos con mucha ilusión para celebrar la llegada de nuestra bebé. Revisa la fecha, lugar y confirma tu asistencia aquí."
+                  rows={3}
+                  className="w-full px-4 py-2.5 rounded-lg border border-warmBeige bg-white text-textPrimary placeholder:text-textLight focus:outline-none focus:ring-2 focus:ring-goldAccent text-sm resize-none"
+                />
+                <p className="text-[11px] text-textLight mt-1">
+                  Recomendado: entre 80 y 160 caracteres para una visualización perfecta en chats.
+                </p>
+              </div>
+            </div>
+
+            {/* Bloque para copiar enlace de compartir */}
+            <div className="bg-white p-4 rounded-xl border border-warmBeige space-y-3 shadow-xs">
+              <label className="block text-sm font-semibold text-textPrimary flex flex-col sm:flex-row sm:items-center justify-between gap-1">
+                <span className="flex items-center gap-1.5">
+                  <LinkIcon className="w-4 h-4 text-goldAccent" />
+                  Enlace de Invitación para Compartir
+                </span>
+                <span className="text-[11px] text-textLight font-normal">
+                  Puedes editar el dominio si usas Cloudflare Tunnel o dominio propio
+                </span>
+              </label>
+
+              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
+                <input
+                  type="text"
+                  value={customDomain}
+                  onChange={(e) => setCustomDomain(e.target.value)}
+                  placeholder="https://tu-dominio-o-tunel.com"
+                  className="flex-1 px-3.5 py-2 rounded-lg border border-warmBeige bg-gray-50 text-textPrimary font-mono text-xs focus:outline-none focus:ring-2 focus:ring-goldAccent"
+                />
+
+                <button
+                  type="button"
+                  onClick={handleCopyLink}
+                  className={`flex items-center justify-center gap-2 px-4 py-2 text-xs font-semibold rounded-lg shadow-xs transition-all active:scale-95 cursor-pointer whitespace-nowrap ${
+                    copiedLink
+                      ? 'bg-emerald-600 text-white'
+                      : 'bg-goldAccent hover:bg-goldAccent/90 text-white'
+                  }`}
+                >
+                  {copiedLink ? (
+                    <>
+                      <Check className="w-4 h-4" />
+                      <span>¡Enlace Copiado!</span>
+                    </>
+                  ) : (
+                    <>
+                      <Copy className="w-4 h-4" />
+                      <span>Copiar Enlace</span>
+                    </>
+                  )}
+                </button>
+              </div>
+            </div>
+
+            {/* Vista Previa en Vivo estilo WhatsApp / Social Media */}
+            <div className="border border-gray-200 rounded-2xl p-4 bg-[#E5DDD5]/30">
+              <div className="flex items-center gap-2 mb-3">
+                <Share2 className="w-4 h-4 text-emerald-600" />
+                <h4 className="text-xs font-bold text-gray-700 uppercase tracking-wider">
+                  Vista previa al compartir en WhatsApp / Redes Sociales
+                </h4>
+              </div>
+
+              <div className="max-w-sm mx-auto sm:mx-0 bg-white rounded-xl overflow-hidden shadow-sm border border-gray-200">
+                <div className="aspect-[1.91/1] w-full bg-gray-100 relative overflow-hidden flex items-center justify-center">
+                  {heroImagePreview ? (
+                    <img src={heroImagePreview} alt="Social preview" className="w-full h-full object-cover" />
+                  ) : (
+                    <div className="text-center p-4">
+                      <ImageIcon className="w-8 h-8 text-gray-300 mx-auto mb-1" />
+                      <span className="text-xs text-gray-400">Sin imagen (se usará el logo por defecto)</span>
+                    </div>
+                  )}
+                </div>
+                <div className="p-3 bg-[#F0F2F5]/80">
+                  <p className="text-[11px] text-gray-500 font-mono truncate mb-0.5">
+                    {customDomain.trim() || (typeof window !== 'undefined' ? window.location.origin : 'https://tudominio.com')}
+                  </p>
+                  <h5 className="text-xs font-bold text-gray-900 line-clamp-1">
+                    {metaTitle.trim() || title.trim() || `Baby Shower de ${babyName || 'Nuestro Bebé'}`}
+                  </h5>
+                  <p className="text-[11px] text-gray-600 line-clamp-2 mt-0.5 leading-snug">
+                    {metaDescription.trim() || description.trim() || `¡Estás invitado a celebrar el Baby Shower de ${babyName || 'Nuestro Bebé'}! Revisa los detalles y confirma tu asistencia.`}
+                  </p>
+                </div>
               </div>
             </div>
           </div>

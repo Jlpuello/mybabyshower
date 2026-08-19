@@ -9,6 +9,8 @@ import eventRoutes from './routes/event.routes.ts';
 import guestRoutes from './routes/guest.routes.ts';
 import authRoutes from './routes/auth.routes.ts';
 import adminRoutes from './routes/admin.routes.ts';
+import sitemapRoutes from './routes/sitemap.routes.ts';
+import { seoMiddleware } from './middleware/seo.middleware.ts';
 import { errorHandler, notFoundHandler } from './middleware/error.middleware.ts';
 
 dotenv.config();
@@ -43,23 +45,28 @@ app.get('/health', (_req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
 });
 
+// Rutas de sitemap y robots
+app.use(sitemapRoutes);
+
 // API routes
 app.use('/api/event', eventRoutes);
 app.use('/api/invitations', guestRoutes);
 app.use('/api/admin', authRoutes);
 app.use('/api/admin', adminRoutes);
 
-// Servir frontend en producción (SPA fallback)
+// Servir archivos estáticos del frontend (dist o public)
+const distPath = path.join(process.cwd(), 'dist');
 const publicPath = path.join(process.cwd(), 'public');
-if (fs.existsSync(publicPath)) {
-  app.use(express.static(publicPath));
-  app.use((req, res, next) => {
-    if (req.method === 'GET' && !req.path.startsWith('/api') && !req.path.startsWith('/uploads') && req.path !== '/health') {
-      return res.sendFile(path.join(publicPath, 'index.html'));
-    }
-    next();
-  });
+
+if (fs.existsSync(distPath)) {
+  app.use(express.static(distPath, { index: false }));
 }
+if (fs.existsSync(publicPath)) {
+  app.use(express.static(publicPath, { index: false }));
+}
+
+// Middleware de SEO para servir index.html inyectado con Open Graph y meta tags dinámicos
+app.use(seoMiddleware);
 
 // 404 handler
 app.use(notFoundHandler);

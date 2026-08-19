@@ -23,9 +23,11 @@ import {
   Camera,
   Video,
   Image as ImageIcon,
+  Pencil,
 } from 'lucide-react';
 import { Button } from '../ui/Button';
 import { CreateMemoryModal, type MemoryRow } from './CreateMemoryModal';
+import { EditMemoryModal } from './EditMemoryModal';
 import { AnimatePresence, motion } from 'framer-motion';
 
 export type { MemoryRow };
@@ -34,12 +36,13 @@ export type { MemoryRow };
 interface MemoryCardProps {
   memory: MemoryRow;
   onToggle: (publicId: string) => void;
+  onEdit: (memory: MemoryRow) => void;
   onDelete: (memory: MemoryRow) => void;
   isDeleting: boolean;
   isToggling: boolean;
 }
 
-const MemoryCard = ({ memory, onToggle, onDelete, isDeleting, isToggling }: MemoryCardProps) => {
+const MemoryCard = ({ memory, onToggle, onEdit, onDelete, isDeleting, isToggling }: MemoryCardProps) => {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } =
     useSortable({ id: memory.publicId });
 
@@ -122,12 +125,12 @@ const MemoryCard = ({ memory, onToggle, onDelete, isDeleting, isToggling }: Memo
         )}
 
         {/* Acciones */}
-        <div className="flex items-center gap-2 mt-3">
+        <div className="flex items-center gap-1.5 mt-3">
           <button
             onClick={() => onToggle(memory.publicId)}
             disabled={isToggling}
             title={memory.isPublished ? 'Ocultar' : 'Publicar'}
-            className={`flex-1 flex items-center justify-center gap-1.5 py-1.5 rounded-lg text-xs font-medium transition-colors ${
+            className={`flex-1 flex items-center justify-center gap-1 py-1.5 rounded-lg text-xs font-medium transition-colors ${
               memory.isPublished
                 ? 'bg-gray-100 text-gray-600 hover:bg-gray-200'
                 : 'bg-green-50 text-green-700 hover:bg-green-100'
@@ -145,10 +148,17 @@ const MemoryCard = ({ memory, onToggle, onDelete, isDeleting, isToggling }: Memo
             )}
           </button>
           <button
+            onClick={() => onEdit(memory)}
+            title="Editar recuerdo"
+            className="p-1.5 rounded-lg text-textLight hover:text-goldAccent hover:bg-warmBeige/50 transition-colors cursor-pointer"
+          >
+            <Pencil className="w-3.5 h-3.5" />
+          </button>
+          <button
             onClick={() => onDelete(memory)}
             disabled={isDeleting}
             title="Eliminar"
-            className="p-1.5 rounded-lg text-textLight hover:text-red-500 hover:bg-red-50 transition-colors disabled:opacity-40"
+            className="p-1.5 rounded-lg text-textLight hover:text-red-500 hover:bg-red-50 transition-colors disabled:opacity-40 cursor-pointer"
           >
             {isDeleting ? (
               <svg className="animate-spin w-3.5 h-3.5" fill="none" viewBox="0 0 24 24">
@@ -169,6 +179,7 @@ const MemoryCard = ({ memory, onToggle, onDelete, isDeleting, isToggling }: Memo
 interface MemoriesGridProps {
   memories: MemoryRow[];
   onMemoryCreated: (memory: MemoryRow) => void;
+  onMemoryUpdated?: (memory: MemoryRow) => void;
   onMemoryDeleted: (publicId: string) => void;
   onMemoryToggled: (memory: MemoryRow) => void;
   onReorder: (orderedIds: string[]) => void;
@@ -177,11 +188,13 @@ interface MemoriesGridProps {
 export const MemoriesGrid = ({
   memories,
   onMemoryCreated,
+  onMemoryUpdated,
   onMemoryDeleted,
   onMemoryToggled,
   onReorder,
 }: MemoriesGridProps) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editingMemory, setEditingMemory] = useState<MemoryRow | null>(null);
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [togglingId, setTogglingId] = useState<string | null>(null);
 
@@ -296,6 +309,7 @@ export const MemoriesGrid = ({
                         key={memory.publicId}
                         memory={memory}
                         onToggle={handleToggle}
+                        onEdit={(mem) => setEditingMemory(mem)}
                         onDelete={handleDelete}
                         isDeleting={deletingId === memory.publicId}
                         isToggling={togglingId === memory.publicId}
@@ -315,6 +329,16 @@ export const MemoriesGrid = ({
         onSuccess={(memory) => {
           onMemoryCreated(memory);
           setIsModalOpen(false);
+        }}
+      />
+
+      <EditMemoryModal
+        memory={editingMemory}
+        isOpen={!!editingMemory}
+        onClose={() => setEditingMemory(null)}
+        onSuccess={(updatedMemory) => {
+          if (onMemoryUpdated) onMemoryUpdated(updatedMemory);
+          setEditingMemory(null);
         }}
       />
     </>

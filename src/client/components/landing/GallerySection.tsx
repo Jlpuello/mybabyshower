@@ -207,7 +207,7 @@ export const GallerySection = ({ primaryColor, secondaryColor }: GallerySectionP
 
         {/* Galería organizada en bloques de 4 (2x2) en Móvil y Mosaico en Desktop */}
         {!loading && memories.length > 0 && (
-          <div className="w-full max-h-[50vh] md:max-h-[55vh] overflow-y-auto pr-1">
+          <div className="w-full max-h-[50vh] md:max-h-[55vh] overflow-y-auto custom-scrollbar pr-1">
             {/* Vista Móvil: Grupos/Bloques de 4 en 4 (grillas 2x2) */}
             <div className="block md:hidden space-y-4">
               {memoryChunks.map((chunk, groupIdx) => (

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from '../ui/Button';
 import { Input } from '../ui/Input';
 import { Loading } from '../ui/Loading';
@@ -16,6 +16,16 @@ export const InvitationForm = ({ onSuccess }: InvitationFormProps) => {
   const sanitizeInput = (value: string): string => {
     return value.replace(/[^a-zA-Z0-9-]/g, '').toUpperCase();
   };
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search);
+      const codeParam = params.get('code') || sessionStorage.getItem('invitation_code');
+      if (codeParam) {
+        setCode(sanitizeInput(codeParam));
+      }
+    }
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

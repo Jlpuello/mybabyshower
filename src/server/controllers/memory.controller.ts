@@ -146,3 +146,49 @@ export const deleteMemory = async (req: AuthRequest, res: Response) => {
 
   res.json({ message: 'Recuerdo eliminado correctamente' });
 };
+
+// ── PUT /api/admin/memories/:memoryId ───────────────────────────
+export const updateMemory = async (req: AuthRequest, res: Response) => {
+  const eventId = req.eventId;
+  if (!eventId) throw new AppError('No autorizado', 401);
+
+  const { memoryId } = req.params;
+  const id = Array.isArray(memoryId) ? memoryId[0] : memoryId;
+
+  const memory = await prisma.memory.findFirst({
+    where: { publicId: id, eventId },
+  });
+
+  if (!memory) throw new AppError('Recuerdo no encontrado', 404);
+
+  const { title, description, eventDate, isPublished } = req.body;
+
+  let mediaUrl = memory.mediaUrl;
+  let mediaType = memory.mediaType;
+
+  const mediaFile = (req as any).file as Express.Multer.File | undefined;
+  if (mediaFile) {
+    // Eliminar archivo antiguo del disco
+    if (memory.mediaUrl.startsWith('/uploads/')) {
+      const oldPath = path.join(process.cwd(), memory.mediaUrl);
+      if (fs.existsSync(oldPath)) fs.unlinkSync(oldPath);
+    }
+    const isImage = IMAGE_MIMETYPES.includes(mediaFile.mimetype);
+    mediaType = isImage ? 'IMAGE' : 'VIDEO';
+    mediaUrl = `/uploads/memories/${mediaFile.filename}`;
+  }
+
+  const updated = await prisma.memory.update({
+    where: { id: memory.id },
+    data: {
+      ...(title !== undefined && { title: (title as string).trim() }),
+      ...(description !== undefined && { description: (description as string | undefined)?.trim() || null }),
+      ...(eventDate !== undefined && { eventDate: eventDate ? new Date(eventDate as string) : null }),
+      ...(isPublished !== undefined && { isPublished: isPublished === 'true' || isPublished === true }),
+      mediaUrl,
+      mediaType,
+    },
+  });
+
+  res.json(updated);
+};

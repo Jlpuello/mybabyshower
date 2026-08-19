@@ -1,7 +1,8 @@
 import { useState } from 'react';
-import { Gift, GiftIcon, Plus, Trash2, Users, ChevronDown, ChevronUp } from 'lucide-react';
+import { Gift, GiftIcon, Plus, Trash2, Users, ChevronDown, ChevronUp, Pencil } from 'lucide-react';
 import { Button } from '../ui/Button';
 import { CreateGiftModal, type GiftRow } from './CreateGiftModal';
+import { EditGiftModal } from './EditGiftModal';
 import { AnimatePresence, motion } from 'framer-motion';
 
 export type { GiftRow };
@@ -28,6 +29,7 @@ const ATTENDANCE_LABEL: Record<string, string> = {
 interface GiftsTableProps {
   gifts: GiftRow[];
   onGiftCreated: (gift: GiftRow) => void;
+  onGiftUpdated?: (gift: GiftRow) => void;
   onGiftDeleted: (publicId: string) => void;
 }
 
@@ -77,8 +79,9 @@ const ReservedByRow = ({ reservations }: { reservations: GiftRow['reservations']
 );
 
 // ── Componente principal ───────────────────────────────────────────────
-export const GiftsTable = ({ gifts, onGiftCreated, onGiftDeleted }: GiftsTableProps) => {
+export const GiftsTable = ({ gifts, onGiftCreated, onGiftUpdated, onGiftDeleted }: GiftsTableProps) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editingGift, setEditingGift] = useState<GiftRow | null>(null);
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const [deletingId, setDeletingId] = useState<string | null>(null);
 
@@ -240,21 +243,30 @@ export const GiftsTable = ({ gifts, onGiftCreated, onGiftDeleted }: GiftsTablePr
 
                         {/* Acciones */}
                         <td className="pr-6 px-4 py-3 whitespace-nowrap">
-                          <button
-                            onClick={() => handleDelete(gift)}
-                            disabled={deletingId === gift.publicId}
-                            className="p-1.5 rounded-lg text-textLight hover:text-red-500 hover:bg-red-50 transition-colors disabled:opacity-40"
-                            title="Eliminar regalo"
-                          >
-                            {deletingId === gift.publicId ? (
-                              <svg className="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24">
-                                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-                              </svg>
-                            ) : (
-                              <Trash2 className="w-4 h-4" />
-                            )}
-                          </button>
+                          <div className="flex items-center gap-1">
+                            <button
+                              onClick={() => setEditingGift(gift)}
+                              className="p-1.5 rounded-lg text-textSecondary hover:text-goldAccent hover:bg-warmBeige/50 transition-colors cursor-pointer"
+                              title="Editar regalo"
+                            >
+                              <Pencil className="w-4 h-4" />
+                            </button>
+                            <button
+                              onClick={() => handleDelete(gift)}
+                              disabled={deletingId === gift.publicId}
+                              className="p-1.5 rounded-lg text-textLight hover:text-red-500 hover:bg-red-50 transition-colors disabled:opacity-40 cursor-pointer"
+                              title="Eliminar regalo"
+                            >
+                              {deletingId === gift.publicId ? (
+                                <svg className="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24">
+                                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                                </svg>
+                              ) : (
+                                <Trash2 className="w-4 h-4" />
+                              )}
+                            </button>
+                          </div>
                         </td>
                       </motion.tr>
 
@@ -299,6 +311,16 @@ export const GiftsTable = ({ gifts, onGiftCreated, onGiftDeleted }: GiftsTablePr
         onSuccess={(gift) => {
           onGiftCreated(gift);
           setIsModalOpen(false);
+        }}
+      />
+
+      <EditGiftModal
+        gift={editingGift}
+        isOpen={!!editingGift}
+        onClose={() => setEditingGift(null)}
+        onSuccess={(updatedGift) => {
+          if (onGiftUpdated) onGiftUpdated(updatedGift);
+          setEditingGift(null);
         }}
       />
     </>

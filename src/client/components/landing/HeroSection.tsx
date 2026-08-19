@@ -76,7 +76,11 @@ export const HeroSection = ({ title, babyName, description, heroImage, primaryCo
           <Heart className="w-5 h-5 sm:w-6 sm:h-6 md:w-7 md:h-7 fill-current opacity-80" style={{ color }} />
         </div>
 
-        <SectionNavButton targetId={['historia', 'revelacion', 'detalles', 'galeria']} color={color} />
+        <SectionNavButton
+          targetId={['historia', 'revelacion', 'detalles', 'galeria']}
+          color={color}
+          thought="¿Quieres conocer nuestra historia? Hay más abajo... ✨"
+        />
       </div>
     </section>
   );

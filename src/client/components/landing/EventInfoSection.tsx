@@ -108,11 +108,18 @@ export const EventInfoSection = ({
         </div>
       </div>
 
-      {/* Botón de ingreso con código de invitación - Sticky en mobile */}
-      <div className="sticky bottom-4 z-40 md:static md:z-auto md:bottom-auto px-4">
+      {/* Botón de ingreso con código de invitación - Integrado en el flujo responsivo */}
+      <div className="w-full max-w-md mx-auto px-4 my-3 sm:my-5">
         <button
-          onClick={() => navigate('/guest')}
-          className="w-full max-w-md mx-auto px-6 sm:px-8 py-2.5 sm:py-3.5 rounded-xl text-xs sm:text-base font-medium transition-all shadow-md hover:shadow-lg hover:opacity-95 text-white active:scale-95 cursor-pointer"
+          onClick={() => {
+            const storedCode = typeof window !== 'undefined' ? sessionStorage.getItem('invitation_code') : null;
+            if (storedCode) {
+              navigate(`/guest?code=${storedCode}`);
+            } else {
+              navigate('/guest');
+            }
+          }}
+          className="w-full px-6 sm:px-8 py-3 sm:py-3.5 rounded-xl text-xs sm:text-base font-semibold transition-all shadow-md hover:shadow-lg hover:opacity-95 text-white active:scale-95 cursor-pointer"
           style={{
             backgroundColor: primaryColor || '#C9A962',
           }}
@@ -121,7 +128,11 @@ export const EventInfoSection = ({
         </button>
       </div>
 
-      <SectionNavButton targetId={['galeria', 'hero']} color={primaryColor} />
+      <SectionNavButton
+        targetId={['galeria', 'hero']}
+        color={primaryColor}
+        thought="Explora nuestra galería de recuerdos 📸💖"
+      />
     </section>
   );
 };

@@ -141,13 +141,17 @@ export const RevelationSection = ({
         {/* Contenido descriptivo */}
         {revelationContent && (
           <div
-            className="prose prose-sm sm:prose-lg max-w-none text-textSecondary leading-relaxed text-center px-2 max-h-[25vh] overflow-y-auto"
+            className="prose prose-sm sm:prose-lg max-w-none text-textSecondary leading-relaxed text-center px-2 max-h-[25vh] overflow-y-auto custom-scrollbar"
             dangerouslySetInnerHTML={{ __html: revelationContent }}
           />
         )}
       </div>
 
-      <SectionNavButton targetId={['detalles', 'galeria']} color={primaryColor} />
+      <SectionNavButton
+        targetId={['detalles', 'galeria']}
+        color={primaryColor}
+        thought="Mira la fecha, hora y ubicación del Baby Shower 📍📅"
+      />
     </section>
   );
 };

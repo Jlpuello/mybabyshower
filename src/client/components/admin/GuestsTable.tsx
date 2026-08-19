@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { UserPlus, Copy, Check, Ticket, Pencil } from 'lucide-react';
+import { UserPlus, Copy, Check, Ticket, Pencil, MessageSquare } from 'lucide-react';
 import { Button } from '../ui/Button';
 import { CreateGuestModal } from './CreateGuestModal';
 import { EditGuestModal } from './EditGuestModal';
@@ -58,6 +58,33 @@ const CopyCode = ({ code }: { code: string }) => {
           <Copy className="w-3.5 h-3.5" />
         )}
       </span>
+    </button>
+  );
+};
+
+const CopyWhatsAppMessage = ({ guest }: { guest: GuestRow }) => {
+  const [copied, setCopied] = useState(false);
+
+  const handleCopy = async () => {
+    const origin = typeof window !== 'undefined' ? window.location.origin : '';
+    const shareUrl = `${origin}/?code=${guest.invitationCode}`;
+    const message = `¡Hola ${guest.name}! Te invitamos a nuestro Baby Shower 👶✨. Descubre los detalles e ingresa a tu invitación aquí: ${shareUrl}`;
+    await navigator.clipboard.writeText(message);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
+  return (
+    <button
+      onClick={handleCopy}
+      title="Copiar mensaje listo para enviar por WhatsApp"
+      className="text-emerald-600 hover:text-emerald-700 transition-colors rounded-lg p-1.5 hover:bg-emerald-50 cursor-pointer"
+    >
+      {copied ? (
+        <Check className="w-4 h-4 text-emerald-600" />
+      ) : (
+        <MessageSquare className="w-4 h-4" />
+      )}
     </button>
   );
 };
@@ -156,13 +183,16 @@ export const GuestsTable = ({ guests, onGuestCreated, onGuestUpdated }: GuestsTa
                         )}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <button
-                          onClick={() => setEditingGuest(guest)}
-                          className="text-textSecondary hover:text-goldAccent transition-colors rounded-lg p-1.5 hover:bg-warmBeige/50 cursor-pointer"
-                          title="Editar invitado"
-                        >
-                          <Pencil className="w-4 h-4" />
-                        </button>
+                        <div className="flex items-center gap-1">
+                          <CopyWhatsAppMessage guest={guest} />
+                          <button
+                            onClick={() => setEditingGuest(guest)}
+                            className="text-textSecondary hover:text-goldAccent transition-colors rounded-lg p-1.5 hover:bg-warmBeige/50 cursor-pointer"
+                            title="Editar invitado"
+                          >
+                            <Pencil className="w-4 h-4" />
+                          </button>
+                        </div>
                       </td>
                     </motion.tr>
                   );

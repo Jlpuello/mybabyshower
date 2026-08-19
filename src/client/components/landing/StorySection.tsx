@@ -31,7 +31,7 @@ export const StorySection = ({ storyTitle, storyContent, storyImage, primaryColo
           className="w-16 h-1 mx-auto rounded-full mb-4 sm:mb-6 opacity-80"
           style={{ backgroundColor: secColor }}
         />
-        <div className="max-h-[52vh] overflow-y-auto px-1 space-y-4">
+        <div className="max-h-[52vh] overflow-y-auto custom-scrollbar px-1 space-y-4">
           <div
             className="prose prose-base sm:prose-lg max-w-none text-textSecondary leading-relaxed text-left md:text-center"
             dangerouslySetInnerHTML={{ __html: storyContent }}
@@ -54,7 +54,11 @@ export const StorySection = ({ storyTitle, storyContent, storyImage, primaryColo
         </div>
       </div>
 
-      <SectionNavButton targetId={['revelacion', 'detalles', 'galeria']} color={primaryColor} />
+      <SectionNavButton
+        targetId={['revelacion', 'detalles', 'galeria']}
+        color={primaryColor}
+        thought="¡Descubre la gran sorpresa de la revelación! 🤫🎉"
+      />
     </section>
   );
 };

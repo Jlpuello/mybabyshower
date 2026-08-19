@@ -33,4 +33,25 @@
   .animate-delay-1000 {
     animation-delay: 1000ms;
   }
+
+  /* Custom scrollbar para contenedores desbordantes en móvil */
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 5px;
+    height: 5px;
+  }
+  .custom-scrollbar::-webkit-scrollbar-track {
+    background: rgba(200, 200, 200, 0.15);
+    border-radius: 10px;
+  }
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    background: rgba(201, 169, 98, 0.4);
+    border-radius: 10px;
+  }
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: rgba(201, 169, 98, 0.7);
+  }
+  .custom-scrollbar {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(201, 169, 98, 0.4) transparent;
+  }
 }
